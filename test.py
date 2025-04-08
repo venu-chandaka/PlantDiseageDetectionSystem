@@ -21,9 +21,13 @@ def model_predict(image_path):
 
     return prediction 
 
-def pesticides(prompt):
+def pesticides(prompt,lang):
     model = genai.GenerativeModel("gemini-1.5-flash")
-    response = model.generate_content("suggest best pesticides {}.".format(prompt))
+    response = model.generate_content("let us assume that you are an expert to give best suggestions for plant diseases and now suggest best pesticides {} explain in {}.".format(prompt,lang))
+    return response.text
+def disease(prompt,lang):
+    model =genai.GenerativeModel("gemini-1.5-flash")
+    response = model.generate_content("just translate '{}' in {}, no need to explain".format(prompt,lang))
     return response.text
 
 
@@ -36,12 +40,12 @@ img = Image.open('Disease.png')
 st.image(img)
 
 if(app_mode == 'Home'):
-    st.markdown("<h1 style='text-align: center;'>Plant Disease Prediction System for Sustainable Agriculture</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color : green;'>Plant Disease Prediction System for Sustainable Agriculture</h1>", unsafe_allow_html=True)
 
 elif(app_mode == 'Disease Recognition'):
     st.header("Plant Disease Prediction System for Sustainable Agriculture")
     test_image = st.file_uploader("Choose an Image:")
-
+    lang = st.selectbox("Select language",['English','telugu','hindi','tamil','kannada','malayalam'])
     if test_image is not None:
         save_path = os.path.join(os.getcwd(), 'test_image.name')
         print(save_path)
@@ -71,7 +75,7 @@ elif(app_mode == 'Disease Recognition'):
                     'Tomato___Target_Spot', 'Tomato___Tomato_Yellow_Leaf_Curl_Virus', 'Tomato___Tomato_mosaic_virus',
                       'Tomato___healthy']
     
-        st.success("Model is predicting that it is a '{}' diesease".format(class_name[result_index]))
+        st.success("Model is predicting that it is a '{}'({}) diesease".format(class_name[result_index],disease(class_name[result_index],lang)))
         #suggesting pesticide
     if(st.button("suggest")):
         class_name = ['Apple___Apple_scab', 'Apple___Black_rot', 'Apple___Cedar_apple_rust', 'Apple___healthy',
@@ -92,6 +96,10 @@ elif(app_mode == 'Disease Recognition'):
         result_index = model_predict(save_path)
         
         st.write("Suggestions")
-        result_ps = pesticides(class_name[result_index])
+        result_ps = pesticides(class_name[result_index],lang)
         print(result_ps)
         st.success(result_ps)
+    if(st.button("review")):
+        review =st.text_input("please give review")
+        st.write(f"your response '{review}' is taken. Thank you for giving review about my project") 
+    
