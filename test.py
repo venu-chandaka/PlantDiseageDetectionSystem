@@ -4,7 +4,7 @@ import numpy as np
 import os 
 import cv2 #opencv
 import google.generativeai as genai
-genai.configure(api_key="AIzaSyCXydZTMFmdglWNEXgjVrX-nOIOtqmfMP8")
+genai.configure(api_key="your-google-api-key")
 
 #function for predicting img 
 def model_predict(image_path):
@@ -103,3 +103,4 @@ elif(app_mode == 'Disease Recognition'):
         review =st.text_input("please give review")
         st.write(f"your response '{review}' is taken. Thank you for giving review about my project") 
     
+
